@@ -48,13 +48,13 @@ def ngram_calc(fileContents, numGrams):
 
 
 
-    #now need to split each tag into ngrams
+    #now need to split each tag into ngrams 
+    # THIS WORKS NGRAMS SPLIT 
     spaced=[]
     finalSpaced=[]
     ngrams=[]
     for i in sequences:
         print("I: ", i)
-        #spaced = re.split("\\s+", i)
         spaced = i.split()
         
         print("spaced word: ", spaced)
@@ -64,22 +64,15 @@ def ngram_calc(fileContents, numGrams):
             temp=[spaced[j] for j in range(i,i+numGrams)]
             ngrams.append(" ".join(temp))
     print("Spaced:", finalSpaced)
-    print("ngrams: :", ngrams)
+    print("ngrams: ", ngrams)
 
-    # ngrams=[]
-    # for i in finalSpaced:
-    #     for i in range(len(finalSpaced)-numGrams+1):
-    #         temp=[finalSpaced[j] for j in range(i,i+numGrams)]
-    #         #ngrams.append(" ".join(temp))
-    #         ngrams.append(" ".join(map(str, temp)))
-    #     print("ngrams: ", ngrams)
+    return ngrams
 
+def freq(ngrams):
+    wordfreq = [ngrams.count(p) for p in ngrams]
+    print(wordfreq)
+    return dict(list(zip(ngrams,wordfreq)))
 
-    # periodSplit = fileContents.split("\.")
-    # sentances=[]
-
-    # for tags in periodSplit:
-    #     tags
 
 
 
@@ -100,6 +93,9 @@ def main(argv):
             contents = contents.split('\n')
             contents = " ".join(contents)
             ngrams.extend(ngram_calc(contents,numGrams))
+    
+    frequency= freq(ngrams)
+    print("Dict: ", frequency)
 
             # for line in reader.readlines():
             #     contents = contents.replace("\n","")
