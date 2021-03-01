@@ -6,6 +6,7 @@ import nltk
 import random
 nltk.download('punkt')
 
+
 def punctuation_removal(fileContents):
     punc='''()-[];:'"\,/@#$%^&*_~'''
     for p in fileContents:
@@ -96,8 +97,8 @@ def next_word(cur_word, grams, freq):
     #so the new dic would be word, prob and so on
     # then go thru and do k shit she said 
 
-    for key in freq:
-        print(key, '-->', freq[key])
+    # for key in freq:
+    #     print(key, '-->', freq[key])
 
 
     #PROBABILITY DONE
@@ -106,14 +107,27 @@ def next_word(cur_word, grams, freq):
         temp = freq[key]
         probs = temp/total
         freq[key]=probs
-    
-    
-    
+
     print("Probs", freq)
+
+    rand = random.uniform(0,1)
+    print("random number", rand)
 
 
     #Plan: loop thru and change frequency to probability, then do k shit 
 
+    k=0
+    for key, value in freq.items():
+        rand = random.uniform(0,1)
+        k = k + value
+
+        if rand < k:
+            return key
+        else:
+            continue
+
+
+    #idea: may have to scrape start and end before
 
 
 
@@ -179,15 +193,6 @@ def main(argv):
 
         print(sentence)
         
-
-  
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
