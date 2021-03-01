@@ -3,6 +3,7 @@ import sys
 import re
 from nltk.tokenize import sent_tokenize
 import nltk
+import random
 nltk.download('punkt')
 
 def punctuation_removal(fileContents):
@@ -73,7 +74,66 @@ def freq(ngrams):
     print(wordfreq)
     return dict(list(zip(ngrams,wordfreq)))
 
+def next_word(cur_word, grams, freq):
 
+    sequence = " ".join(cur_word.split()[-(grams-1):])
+    print("Sequence: ", sequence)
+
+    print("Dict = Freq", freq)
+
+    #finding most frequent
+    v = list(freq.values())
+    k= list(freq.keys())
+
+    mostFreq= k[v.index(max(v))]
+    print(mostFreq) # do i have to return it and remove it from list?
+
+
+
+    #maybe sort them first in order from highest to lowest frequency and return them one at a time
+    
+    #maybe take the frequency (count of each ngram) and find probability for each word and map it into a new dictionary
+    #so the new dic would be word, prob and so on
+    # then go thru and do k shit she said 
+
+    for key in freq:
+        print(key, '-->', freq[key])
+
+
+    #PROBABILITY DONE
+    total = sum(freq.values())
+    for key in freq:
+        temp = freq[key]
+        probs = temp/total
+        freq[key]=probs
+    
+    
+    
+    print("Probs", freq)
+
+
+    #Plan: loop thru and change frequency to probability, then do k shit 
+
+
+
+
+
+    # try:
+    #     choices = freq[sequence].items()
+    # except KeyError:
+    #     return "<end>"
+    # # make a weighted choice for the next word
+    # total= sum(chance for choose, chance in choices)
+    
+    # print("Total", total)
+    # # create uniform random number between 0 total
+    # rand = random.uniform(0, total)
+    # until = 0
+
+    # for choice, chance in choices:
+    #     until += chance
+    #     if until > rand:
+    #         return choice
 
 
 
@@ -93,13 +153,34 @@ def main(argv):
             contents = contents.split('\n')
             contents = " ".join(contents)
             ngrams.extend(ngram_calc(contents,numGrams))
-    
-    frequency= freq(ngrams)
-    print("Dict: ", frequency)
-
             # for line in reader.readlines():
             #     contents = contents.replace("\n","")
             #     print(contents)
+    frequency= freq(ngrams)
+    print("Dict: ", frequency)
+
+    for i in range(numOutputs):
+        sentence= random.choice(
+            list(filter(
+                    lambda x: x.startswith("<start>"),
+                    frequency.keys()
+
+                )
+            )
+        )
+
+        while not sentence.endswith("<end>"):
+            sentence = sentence + next_word(sentence, numGrams, frequency)
+
+            # remove start and end tags before printing
+        for tags in sentence:
+            sentence= re.sub("<start>", '', sentence)
+            sentence = re.sub("<end>", '.', sentence)
+
+        print(sentence)
+        
+
+  
 
 
 
