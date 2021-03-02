@@ -7,8 +7,10 @@ import random
 nltk.download('punkt')
 
 
+
+
 def punctuation_removal(fileContents):
-    punc='''()-[];:'"\,/@#$%^&*_~'''
+    punc='''()-[];:'"\,/@#$%-^&*_"“”~'''
     for p in fileContents:
         if p in punc:
             fileContents=fileContents.replace(p,"")
@@ -24,21 +26,19 @@ def ngram_calc(fileContents, numGrams):
     fileContents=punctuation_removal(fileContents)
     # print(fileContents)
     split_on_periods = re.split("\.", fileContents)
-    print(split_on_periods)
+    #print(split_on_periods)
     # sequences=[]
 
     token_text =[]
     token_text = sent_tokenize(fileContents)
-    print(token_text)
+    #print(token_text)
 
     parts=[]
     parts = fileContents.split(".")
-    print(parts)
+    #print(parts)
 
 
-    #sequences = ' '.join('<start> {} </start>'.format(l.strip()) for l in fileContents.split() if len(l.strip()))
-    #print(sequences)
-#sequences.append([tags.split()[i:] for i in range(numGrams)])
+
 
     #adds start and end tags per sentance
     sequences=[]
@@ -46,7 +46,7 @@ def ngram_calc(fileContents, numGrams):
         tags = "<start> " * (numGrams-1) + tags + " <end>"
         #sequences.append(tags)
         sequences.append(tags)
-    print("Sequences: ", sequences)
+    #print("Sequences: ", sequences)
 
 
 
@@ -56,38 +56,59 @@ def ngram_calc(fileContents, numGrams):
     finalSpaced=[]
     ngrams=[]
     for i in sequences:
-        print("I: ", i)
+        #print("I: ", i)
         spaced = i.split()
         
-        print("spaced word: ", spaced)
+        #print("spaced word: ", spaced)
         finalSpaced.append(spaced)
 
         for i in range(len(spaced)-numGrams+1):
             temp=[spaced[j] for j in range(i,i+numGrams)]
             ngrams.append(" ".join(temp))
-    print("Spaced:", finalSpaced)
+    #print("Spaced:", finalSpaced)
     print("ngrams: ", ngrams)
 
     return ngrams
 
 def freq(ngrams):
     wordfreq = [ngrams.count(p) for p in ngrams]
-    print(wordfreq)
+    #print(wordfreq)
     return dict(list(zip(ngrams,wordfreq)))
 
 def next_word(cur_word, grams, freq):
 
-    sequence = " ".join(cur_word.split()[-(grams-1):])
-    print("Sequence: ", sequence)
+    # sequence = " ".join(cur_word.split()[(grams-1):])
+    # print("Sequence: ", sequence)
 
-    print("Dict = Freq", freq)
+    # print("Dictionary Freq: ", freq)
+
+    # options = freq[sequence].items()
+
+    # total = sum(weight for option, weight in options)
+    # r= random.uniform(0,total)
+    # k=0
+
+    # for option, weight in options:
+    #     if k+weight >r:
+    #         return option
+    #     k+=weight
+
+
+
+
+   # print("Options:", options)
+
+
+
+
+    #print("Dict = Freq", freq)
 
     #finding most frequent
-    v = list(freq.values())
-    k= list(freq.keys())
+    # v = list(freq.values())
+    # k= list(freq.keys())
 
-    mostFreq= k[v.index(max(v))]
-    print(mostFreq) # do i have to return it and remove it from list?
+    # mostFreq= k[v.index(max(v))]
+    # print(mostFreq) # do i have to return it and remove it from list?
 
 
 
@@ -101,53 +122,66 @@ def next_word(cur_word, grams, freq):
     #     print(key, '-->', freq[key])
 
 
-    #PROBABILITY DONE
-    total = sum(freq.values())
-    for key in freq:
-        temp = freq[key]
-        probs = temp/total
-        freq[key]=probs
+    ########################PROBABILITY DONE
+    # total = sum(freq.values())
+    # for key in freq:
+    #     temp = freq[key]
+    #     probs = temp/total
+    #     freq[key]=probs
 
-    print("Probs", freq)
 
-    rand = random.uniform(0,1)
-    print("random number", rand)
+      ############################  
+
+    #print("Probs", freq)
+
+    #rand = random.uniform(0,1)
+    #print("random number", rand)
 
 
     #Plan: loop thru and change frequency to probability, then do k shit 
+    ########################################
+    # rand = random.uniform(0,1)
+    # k=0
+    # for key, value in freq.items():
+        
+    #     #k = k + value
 
-    k=0
-    for key, value in freq.items():
-        rand = random.uniform(0,1)
-        k = k + value
+    #     if rand < k+value:
+    #         return key
+    #     k=k+value
+    
 
-        if rand < k:
-            return key
-        else:
-            continue
+        # else:
+        #     continue
 
 
     #idea: may have to scrape start and end before
 
-
+    #Trial 3
+    # current = cur_word
+    # print("Current", current)
+     #sequence = " ".join(cur_word.split()[-(grams-1):])
+    # print(sequence)
 
 
     # try:
     #     choices = freq[sequence].items()
     # except KeyError:
     #     return "<end>"
-    # # make a weighted choice for the next word
-    # total= sum(chance for choose, chance in choices)
     
+    # print(choices)
+
+
+    # total= sum(chance for choose, chance in choices)
     # print("Total", total)
     # # create uniform random number between 0 total
-    # rand = random.uniform(0, total)
+    # rand = random.uniform(0,1)
     # until = 0
 
     # for choice, chance in choices:
-    #     until += chance
-    #     if until > rand:
+    #     if until+chance > rand:
     #         return choice
+    #     until = until+chance
 
 
 
@@ -171,28 +205,50 @@ def main(argv):
             #     contents = contents.replace("\n","")
             #     print(contents)
     frequency= freq(ngrams)
-    print("Dict: ", frequency)
+    #print("Dict: ", frequency)
 
-    for i in range(numOutputs):
-        sentence= random.choice(
-            list(filter(
-                    lambda x: x.startswith("<start>"),
-                    frequency.keys()
+    # for i in range(numOutputs):
+    #     sentence= random.choice(
+    #         list(filter(
+    #                 lambda x: x.startswith("<start>"),
+    #                 frequency.keys()
 
-                )
-            )
-        )
+    #             )
+    #         )
+    #     )
 
-        while not sentence.endswith("<end>"):
-            sentence = sentence + next_word(sentence, numGrams, frequency)
+    #     i=0
+    #     while not sentence.endswith("<end>"):
+    #         print(i)
+    #         sentence = sentence + next_word(sentence, numGrams, frequency)
 
-            # remove start and end tags before printing
-        for tags in sentence:
-            sentence= re.sub("<start>", '', sentence)
-            sentence = re.sub("<end>", '.', sentence)
+    #         # remove start and end tags before printing
+    #     # for tags in sentence:
+    #     #     sentence= re.sub("<start>", '', sentence)
+    #     #     sentence = re.sub("<end>", '.', sentence)
 
-        print(sentence)
-        
+
+    #     print(sentence)
+
+
+    sentence =0
+    rand_start = "<start>"
+
+    while sentence < numOutputs:
+        rand_start += " " + next_word(rand_start, numGrams, frequency)
+
+        if rand_start.endswith(("<end>")):
+            sentence +=1
+    print(rand_start)
+
+    for tags in rand_start:
+        rand_start= re.sub("<start>", '', rand_start)
+        rand_start = re.sub("<end>", '.', rand_start)
+
+    print(rand_start)
+    
+    
+
 
 
 if __name__ == "__main__":
